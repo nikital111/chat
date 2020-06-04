@@ -26,13 +26,13 @@ io.on("connect", (socket) => {
       user: "admin",
       text: `${user.name}, welcome to room ${user.room}.`,
     });
+
     socket.broadcast
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name} has joined!` });
 
-    io.to(user.room).emit("roomData", {
-      room: user.room,
-      users: getUsersInRoom(user.room),
+    io.to(user.room).emit("getUsers", {
+      dataUsers: getUsersInRoom(user.room),
     });
 
     //callback();
@@ -54,9 +54,8 @@ io.on("connect", (socket) => {
         user: "Admin",
         text: `${user.name} has left.`,
       });
-      io.to(user.room).emit("roomData", {
-        room: user.room,
-        users: getUsersInRoom(user.room),
+      io.to(user.room).emit("getUsers", {
+        dataUsers: getUsersInRoom(user.room),
       });
     }
   });

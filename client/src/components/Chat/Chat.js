@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { InfoBar } from "../InfoBar/InfoBar";
 import { Input } from "../Input/Input";
 import { Messages } from "../Messages/Messages";
+import { UsersInRoom } from "../UsersInRoom/UsersInRoom";
 import "./Chat.css";
 let socket;
 
@@ -12,6 +13,7 @@ const Chat = ({ location }) => {
   const [room, setRoom] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const ENDPOINT = "localhost:5000";
 
@@ -38,6 +40,13 @@ const Chat = ({ location }) => {
     });
   }, [messages]);
 
+  useEffect(() => {
+    socket.on("getUsers", (e) => {
+      console.log(e.dataUsers);
+      setUsers(e.dataUsers, ...users);
+    });
+  }, [users]);
+
   const sendMessage = (e) => {
     e.preventDefault();
 
@@ -49,6 +58,7 @@ const Chat = ({ location }) => {
   //console.log(message, messages);
   return (
     <div className="outContainer">
+      <UsersInRoom users={users} />
       <div className="container">
         <InfoBar room={room} />
         <Messages messages={messages} name={name} />
